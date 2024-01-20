@@ -11,8 +11,10 @@ fs.readdir(
     }
     files.forEach((file) => {
       if (file.isFile()) {
-        console.log(file);
-        console.log(path.extname(file.name));
+        const fileName = file.name.toString();
+        console.log(
+          `${fileName.split('.')[0]}-${path.extname(fileName).slice(1)}`,
+        );
       }
     });
   },
