@@ -1,28 +1,24 @@
-const fs = require('node:fs');
+const fs = require('node:fs').promises;
 const path = require('node:path');
 
 const pathStyles = './05-merge-styles/styles';
 const pathProject = './05-merge-styles/project-dist/Bundle.css';
 async function readCss() {
   try {
-    fs.readdir(pathStyles, (err, files) => {
-      let arrayStyles = [];
+    const files = await fs.readdir(pathStyles);
+    const arrayStyles = [];
 
-      files.forEach((file) => {
-        if (path.extname(file).slice(1) === 'css') {
-          const filePath = path.join(pathStyles, file);
-          const data = await fs.readFile(filePath, 'utf8');
-          arrayStyles.push(data);
-        }
-      }); 
-      fs.writeFile(pathProject, arrayStyles.join('\n'), (err) => {
-        if (err) {
-          return console.error(err);
-        }
-      });
-    });
-  } catch{
-    console.error(err)
+    for (const file of files) {
+      if (path.extname(file).slice(1) === 'css') {
+        const filePath = path.join(pathStyles, file);
+        const data = await fs.readFile(filePath, 'utf-8');
+        arrayStyles.push(data);
+      }
+    }
+
+    await fs.writeFile(pathProject, arrayStyles.join('\n'), 'utf-8');
+  } catch (err) {
+    console.error(err);
   }
 }
 readCss();
