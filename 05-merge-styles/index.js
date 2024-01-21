@@ -10,8 +10,7 @@ async function readCss() {
 
     for (const file of files) {
       if (path.extname(file).slice(1) === 'css') {
-        const filePath = path.join(pathStyles, file);
-        const data = await fs.readFile(filePath, 'utf-8');
+        const data = await fs.readFile(path.join(pathStyles, file), 'utf-8');
         arrayStyles.push(data);
       }
     }
