@@ -2,7 +2,9 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const pathStyles = './05-merge-styles/styles';
+const pathProject = './05-merge-styles/project-dist/Bundle.css';
 fs.readdir(pathStyles, (err, files) => {
+  let arrayStyles = [];
   if (err) {
     return console.error(err);
   }
@@ -12,8 +14,13 @@ fs.readdir(pathStyles, (err, files) => {
         if (err) {
           return console.error(err);
         }
-        console.log(data);
+        arrayStyles.push(data);
       });
+    }
+  });
+  fs.writeFile(pathProject, arrayStyles.join('\n'), (err) => {
+    if (err) {
+      return console.error(err);
     }
   });
 });
