@@ -59,6 +59,34 @@ async function builderPage() {
   } catch (err) {
     console.error(err);
   }
+
+  const destinationDir = path.join(pathBuilder, 'assets');
+  const sourceDir = path.join(pathBuilder, 'project-dist/assets');
+
+  const copyFiles = async (destinationDir, sourceDir) => {
+    try {
+      const files = await fs.readdir(destinationDir);
+
+      for (const file of files) {
+        const srcPath = path.join(sourceDir, file);
+        const destPath = path.join(destinationDir, file);
+        const stats = await fs.stat(destPath);
+
+        if (stats.isFile()) {
+          console.log('1');
+          await fs.copyFile(destPath, srcPath);
+        } else if (stats.isDirectory()) {
+          console.log('2');
+          await fs.mkdir(srcPath, { recursive: true });
+          await copyFiles(destPath, srcPath);
+        }
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  await copyFiles(destinationDir, sourceDir);
 }
 
 builderPage();
