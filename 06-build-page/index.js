@@ -73,10 +73,8 @@ async function builderPage() {
         const stats = await fs.stat(destPath);
 
         if (stats.isFile()) {
-          console.log('1');
           await fs.copyFile(destPath, srcPath);
         } else if (stats.isDirectory()) {
-          console.log('2');
           await fs.mkdir(srcPath, { recursive: true });
           await copyFiles(destPath, srcPath);
         }
