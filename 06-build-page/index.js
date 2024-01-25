@@ -17,14 +17,23 @@ async function builderPage() {
       const placeholderFile = path.join(componentsPath, `${placeholder}.html`);
 
       try {
-        const fileContent = await fs.readFile(placeholderFile, 'utf-8');
-        dataTemplate = dataTemplate.replace(placeholderRegex, fileContent);
+        const fileExists = await fs
+          .access(placeholderFile, fs.constants.F_OK)
+          .then(() => true)
+          .catch(() => false);
+
+        if (fileExists) {
+          const fileContent = await fs.readFile(placeholderFile, 'utf-8');
+          dataTemplate = dataTemplate.replace(placeholderRegex, fileContent);
+        }
       } catch (err) {
         console.error(err);
       }
     };
 
-    await Promise.all(['header', 'articles', 'footer'].map(replacePlaceholder));
+    await Promise.all(
+      ['header', 'articles', 'footer', 'about'].map(replacePlaceholder),
+    );
 
     await fs.mkdir(path.join(pathBuilder, 'project-dist'), { recursive: true });
     await fs.writeFile(
