@@ -18,3 +18,9 @@ rl.on('line', (input) => {
     writeStream.write(input + '\n');
   }
 });
+rl.on('SIGINT', () => {
+  console.log('\nGood Bye');
+  rl.close();
+  writeStream.end();
+  process.exit();
+});
