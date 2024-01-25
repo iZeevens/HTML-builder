@@ -8,20 +8,37 @@ fs.mkdir(destinationDir, { recursive: true }, (err) => {
     return console.error(err);
   }
 
-  fs.readdir(sourceDir, (err, files) => {
+  fs.readdir(sourceDir, (err, sourceFiles) => {
     if (err) {
       return console.error(err);
     }
-    files.forEach((file) => {
-      fs.copyFile(
-        path.join(sourceDir, file),
-        path.join(destinationDir, file),
-        (err) => {
+
+    fs.readdir(destinationDir, (err, destFiles) => {
+      if (err) {
+        return console.error(err);
+      }
+
+      destFiles.forEach((destFile) => {
+        if (!sourceFiles.includes(destFile)) {
+          const filePath = path.join(destinationDir, destFile);
+          fs.unlink(filePath, (err) => {
+            if (err) {
+              return console.error(err);
+            }
+          });
+        }
+      });
+
+      sourceFiles.forEach((file) => {
+        const sourceFile = path.join(sourceDir, file);
+        const destinationFile = path.join(destinationDir, file);
+
+        fs.copyFile(sourceFile, destinationFile, (err) => {
           if (err) {
             return console.error(err);
           }
-        },
-      );
+        });
+      });
     });
   });
 });
